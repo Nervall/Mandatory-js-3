@@ -9,21 +9,15 @@ header {
     background-color: #eeeeee;
     color: #8b8b8b;
     margin: 0;
-    height: 120px;
+    margin-bottom: 30px;
+    height: 100px;
 }
 
 header h1 {
     margin: 0;
     font-size: 1.6rem;
     padding-left: 20px;
-    padding-top: 20px;
-}
-
-header P {
-    margin: 0;
-    font-size: 0.8rem;
-    padding-left: 20px;
-    padding-top: 10px;
+    padding-top: 30px;
 }
 
 a, a:visited {

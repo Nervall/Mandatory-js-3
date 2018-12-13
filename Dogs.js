@@ -149,7 +149,13 @@ function start() {
     if (window.location.hash !== '') {
         hashRemoved = window.location.hash.substring(1);
         request('GET', 'https://dog.ceo/api/breed/'+ hashRemoved +'/images/random', subBreedPicture);
-        request('GET', "https://dog.ceo/api/breed/" + hashRemoved +"/list", subBreedList) 
+        if (hashRemoved.includes('/')){
+            let str = hashRemoved;
+            let words = str.split('/');
+            request('GET', "https://dog.ceo/api/breed/" + words[0] +"/list", subBreedList); 
+        } else {
+            request('GET', "https://dog.ceo/api/breed/" + hashRemoved +"/list", subBreedList);
+        }   
     } else {
     getRandomPicture();
     }
