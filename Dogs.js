@@ -1,46 +1,19 @@
 let ul = document.querySelector('ul');
 let main = document.querySelector('main');
 let section = document.querySelector('section ul');
-//let a = document.querySelector('a');
 let hash = '';
 let hashSub ='';
-//let hash2;
-
-function checkChilds() {
-    let child = main.childNodes;
-    for (let i = 0; i < child.length; i++) {
-        setTimeout(function(){ 
-            while (child.length > 3) {   
-                main.removeChild(main.lastChild);
-            }
-            /*
-            if (child.length > 2) {
-            main.removeChild(child[3]);
-            main.parentNode.removeChild(a);
-            main.removeChild(child[4]); 
-        } */
-    }, 200);
-    }   
-}
-
+let hashRemoved = '';
 
 window.addEventListener("hashchange", function() {
     hash = window.location.hash.substring(1);
     main.innerHTML = ' ';
     section.innerHTML = ' ';
+    location.reload()
     main.innerHTML = '<h3>' + capitalize(hash) + '</h3>';
-    //let check = document.querySelector("main").hasChildNodes();
-
-    request('GET', 'https://dog.ceo/api/breed/'+ hash +'/images/random', breedPicture);
-    request('GET', "https://dog.ceo/api/breed/" + hash +"/list", subBreedList);
-    checkChilds();
+    request('GET', 'https://dog.ceo/api/breed/'+ hashRemoved +'/images/random', breedPicture);
+    request('GET', "https://dog.ceo/api/breed/" + hashRemoved +"/list", subBreedList);
 });
-
-function deleteImg(){
-        
-    let selectImg = document.querySelector('img');
-    main.parentNode.removeChild(selectImg);
-}
 
 /* ---- GET FIRST LETTER UPPERCASE ---- */
 function capitalize(string) {
@@ -56,7 +29,7 @@ function request(method, url, run) {
     }
 
 
-/* ---- GET ALL BREEDS LIST ON FIRST PAGE ---- */
+/* ---- GET ALL BREEDS LIST (INDEX)---- */
 function renderAllBreedList() {
     let myArray = JSON.parse(this.responseText);
     let data = myArray.message;
@@ -71,7 +44,7 @@ function renderAllBreedList() {
     }
 }
 
-/* ---- GET RANDOM PICTURE ON FIRST PAGE ---- */
+/* ---- GET RANDOM PICTURE (INDEX) ---- */
 function getRandomPicture() {
     main.innerHTML = ' ';
     main.innerHTML = '<h3 id="picheader">Random picture on dog</h3> ';
@@ -92,23 +65,20 @@ function randomPicture() {
     main.appendChild(button);
 }
 
-/* ---- GET BREEDS RANDOM IMAGE ---- */
-function getBreedsRandomPicture(e) {
-    //let hash2 = hash;
-    //console.log(hash2);
-    hash = this.getAttribute('href').substring(1);
-    console.log(hash);
+/* ---- GET BREEDS RANDOM PICTURE ---- */
+function getBreedsRandomPicture() {
+    hashRemoved = this.getAttribute('href').substring(1);
     main.innerHTML = ' ';
     section.innerHTML = ' ';
-    main.innerHTML = '<h3>' + capitalize(hash) + '</h3>';
-    request('GET', 'https://dog.ceo/api/breed/'+ hash +'/images/random', breedPicture);
-    request('GET', "https://dog.ceo/api/breed/" + hash +"/list", subBreedList)
+    request('GET', 'https://dog.ceo/api/breed/'+ hashRemoved +'/images/random', breedPicture);
+    request('GET', "https://dog.ceo/api/breed/" + hashRemoved +"/list", subBreedList)
     
 }
 
 function breedPicture() {
     let pic = JSON.parse(this.responseText);
     let data = pic.message;
+    main.innerHTML = '<h3>' + capitalize(hashRemoved) + '</h3>';
     let img = document.createElement('img');
     img.setAttribute('src', data);
     img.setAttribute('id', 'picture');
@@ -135,7 +105,7 @@ function subBreedList() {
     for (let key in data) {
         let li = document.createElement('li');
         let a = document.createElement('a');
-        a.setAttribute('href', '#' +hash+'/'+ data[key]);
+        a.setAttribute('href', '#' +hashRemoved+'/'+ data[key]);
         a.addEventListener('click', subBreedsRandomPic);
         a.textContent = capitalize(data[key]);
         section.appendChild(li);
@@ -143,37 +113,46 @@ function subBreedList() {
     }
 }
 
-/* ---- GET SUBBREEDS RANDOM IMAGE ---- */
-function subBreedsRandomPic(e) {
-    hash2 = hashSub;
+/* ---- GET SUBBREEDS RANDOM PICTURE ---- */
+function subBreedsRandomPic() {
     hashSub = this.getAttribute('href').substring(1);
     main.innerHTML = ' ';
-    main.innerHTML = '<h3>' + capitalize(hashSub)  + '</h3>';
-    request('GET', 'https://dog.ceo/api/breed/'+ hashSub +'/images/random', subBreedPicture)
+    request('GET', 'https://dog.ceo/api/breed/'+ hashRemoved +'/images/random', subBreedPicture)
+    request('GET', "https://dog.ceo/api/breed/" + hashRemoved +"/list", subBreedList)
 }
 
 function subBreedPicture() {
     let pic = JSON.parse(this.responseText);
     let data = pic.message;
+    main.innerHTML = '<h3>' + capitalize(hashRemoved)  + '</h3>';
     let img = document.createElement('img');
     img.setAttribute('src', data);
     img.setAttribute('id', 'picture');
     main.appendChild(img);
-    let a2 = document.createElement('a')
-    //a2.setAttribute('href', '#' + hash);
-    //a2.setAttribute('class', 'PicButton');
-    //a2.addEventListener('click', getBreedsRandomPicture);
-    //a2.textContent = 'Back';
-    //main.appendChild(a2);
     let a = document.createElement('a')
-    a.setAttribute('href', '#' + hashSub);
+    a.setAttribute('href', '#' + hashRemoved);
     a.setAttribute('class', 'PicButton');
     a.textContent = 'New Picture';
     a.addEventListener('click', subBreedsRandomPic)
     main.appendChild(a);
-
+    let a2 = document.createElement('a')
+    a2.setAttribute('href', '#' + hash);
+    a2.setAttribute('class', 'PicButton');
+    a2.addEventListener('click', getBreedsRandomPicture);
+    a2.textContent = 'Back';
+    main.appendChild(a2);  
 }
 
-request('GET', 'https://dog.ceo/api/breeds/list/all', renderAllBreedList);
-getRandomPicture();
+function start() {
+    request('GET', 'https://dog.ceo/api/breeds/list/all', renderAllBreedList);
 
+    if (window.location.hash !== '') {
+        hashRemoved = window.location.hash.substring(1);
+        request('GET', 'https://dog.ceo/api/breed/'+ hashRemoved +'/images/random', subBreedPicture);
+        request('GET', "https://dog.ceo/api/breed/" + hashRemoved +"/list", subBreedList) 
+    } else {
+    getRandomPicture();
+    }
+}
+
+start();

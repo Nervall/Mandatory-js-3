@@ -1,6 +1,29 @@
 html {
     font-family: 'Roboto Slab', serif;
     font-size: 18px;
+    margin: 0;
+}
+
+header {
+    width: 100%;
+    background-color: #eeeeee;
+    color: #8b8b8b;
+    margin: 0;
+    height: 120px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    padding-left: 20px;
+    padding-top: 20px;
+}
+
+header P {
+    margin: 0;
+    font-size: 0.8rem;
+    padding-left: 20px;
+    padding-top: 10px;
 }
 
 a, a:visited {
@@ -10,7 +33,7 @@ a, a:visited {
 
 a:hover {
     text-decoration: underline;
-    color: #0383aa
+    color: #026b8b
 }
 
 .container {
