@@ -9,10 +9,11 @@ window.addEventListener("hashchange", function() {
     hash = window.location.hash.substring(1);
     main.innerHTML = ' ';
     section.innerHTML = ' ';
-    location.reload()
+    location.reload();
     main.innerHTML = '<h3>' + capitalize(hash) + '</h3>';
     request('GET', 'https://dog.ceo/api/breed/'+ hashRemoved +'/images/random', breedPicture);
     request('GET', "https://dog.ceo/api/breed/" + hashRemoved +"/list", subBreedList);
+    location.reload();
 });
 
 /* ---- GET FIRST LETTER UPPERCASE ---- */
@@ -115,10 +116,18 @@ function subBreedList() {
 
 /* ---- GET SUBBREEDS RANDOM PICTURE ---- */
 function subBreedsRandomPic() {
-    hashSub = this.getAttribute('href').substring(1);
+    //hashSub = this.getAttribute('href').substring(1);
     main.innerHTML = ' ';
     request('GET', 'https://dog.ceo/api/breed/'+ hashRemoved +'/images/random', subBreedPicture)
-    request('GET', "https://dog.ceo/api/breed/" + hashRemoved +"/list", subBreedList)
+    if (hashRemoved.includes('/')) {
+        let str = hashRemoved;
+        let words = str.split('/');
+        request('GET', "https://dog.ceo/api/breed/" + words[0] +"/list", subBreedList); 
+        location.reload();
+        } else {
+        request('GET', "https://dog.ceo/api/breed/" + hashRemoved +"/list", subBreedList);
+        location.reload();
+    }
 }
 
 function subBreedPicture() {
@@ -143,13 +152,13 @@ function subBreedPicture() {
     main.appendChild(a2);  
 }
 
+/* ---- CHECK HASH AND STARTS THE APPLICATION ---- */
 function start() {
     request('GET', 'https://dog.ceo/api/breeds/list/all', renderAllBreedList);
-
     if (window.location.hash !== '') {
         hashRemoved = window.location.hash.substring(1);
         request('GET', 'https://dog.ceo/api/breed/'+ hashRemoved +'/images/random', subBreedPicture);
-        if (hashRemoved.includes('/')){
+        if (hashRemoved.includes('/')) {
             let str = hashRemoved;
             let words = str.split('/');
             request('GET', "https://dog.ceo/api/breed/" + words[0] +"/list", subBreedList); 
